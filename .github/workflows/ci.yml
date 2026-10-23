@@ -1,0 +1,71 @@
+name: WWI Snowflake Pipeline CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  lint-test-and-validate:
+    name: Lint, Test, dbt Parse & Terraform Validate
+    runs-on: ubuntu-latest
+
+    env:
+      DRY_RUN_LOCAL: "true"
+      WWI_SAMPLE_ORDER_COUNT: "500"
+      SNOWFLAKE_ACCOUNT: "xy12345.east-us-2.azure"
+      SNOWFLAKE_USER: "WWI_CI_USER"
+      SNOWFLAKE_PASSWORD: "ci_placeholder_password"
+      SNOWFLAKE_DATABASE: "WWI_DB"
+      SNOWFLAKE_WAREHOUSE: "WWI_WH"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint code with Ruff
+        run: |
+          ruff check dagster_wwi/ dashboard/ tests/
+
+      - name: Install dbt packages and parse dbt project
+        run: |
+          dbt deps --project-dir dbt_wwi --profiles-dir dbt_wwi
+          dbt parse --project-dir dbt_wwi --profiles-dir dbt_wwi
+
+      - name: Run Pytest unit & integration suite
+        run: |
+          pytest tests/ -v --cov=dagster_wwi
+
+      - name: Execute End-to-End Dagster Pipeline & Generate Dashboard Previews
+        run: |
+          python -m dagster_wwi.run_pipeline
+          python dashboard/generate_dashboard_preview.py
+
+      - name: Validate Docker Compose syntax
+        run: |
+          cp .env.example .env
+          docker compose config -q
+
+      - name: Set up Terraform and validate IaC
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform Format & Validate
+        working-directory: terraform
+        run: |
+          terraform fmt -check
+          terraform init -backend=false
+          terraform validate

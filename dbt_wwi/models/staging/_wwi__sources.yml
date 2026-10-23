@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: wwi_raw
+    description: "Wide World Importers (WWI) raw tables loaded from Azure Data Lake Storage Gen2 into Snowflake RAW schema"
+    database: "{{ env_var('SNOWFLAKE_DATABASE', 'WWI_DB') }}"
+    schema: "{{ env_var('SNOWFLAKE_SCHEMA_RAW', 'RAW') }}"
+    tables:
+      - name: raw_customers
+        identifier: RAW_CUSTOMERS
+        description: "Raw Sales.Customers joined with CustomerCategories, BuyingGroups, and Application.Cities"
+      - name: raw_stock_items
+        identifier: RAW_STOCK_ITEMS
+        description: "Raw Warehouse.StockItems enriched with StockGroups"
+      - name: raw_suppliers
+        identifier: RAW_SUPPLIERS
+        description: "Raw Purchasing.Suppliers enriched with SupplierCategories"
+      - name: raw_orders
+        identifier: RAW_ORDERS
+        description: "Raw Sales.Orders header records clustered by order_date"
+      - name: raw_order_lines
+        identifier: RAW_ORDER_LINES
+        description: "Raw Sales.OrderLines item records"
+      - name: raw_invoices
+        identifier: RAW_INVOICES
+        description: "Raw Sales.Invoices header records clustered by invoice_date and customer_id"
+      - name: raw_invoice_lines
+        identifier: RAW_INVOICE_LINES
+        description: "Raw Sales.InvoiceLines item-level revenue, tax, and profit records"

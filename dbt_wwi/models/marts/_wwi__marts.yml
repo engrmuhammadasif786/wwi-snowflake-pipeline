@@ -1,0 +1,97 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Wide World Importers Customer Dimension with lifetime revenue and profit metrics"
+    columns:
+      - name: customer_sk
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_category_name
+        tests:
+          - not_null
+
+  - name: dim_stock_items
+    description: "Wide World Importers Warehouse Stock Item Dimension with supplier and chiller classification"
+    columns:
+      - name: stock_item_sk
+        tests:
+          - unique
+          - not_null
+      - name: stock_item_id
+        tests:
+          - unique
+          - not_null
+      - name: stock_group_name
+        tests:
+          - not_null
+
+  - name: fct_sales_orders
+    description: "Fact table of WWI sales order lines clustered by order_date and customer_category_name"
+    columns:
+      - name: order_line_sk
+        tests:
+          - unique
+          - not_null
+      - name: order_line_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+
+  - name: fct_invoices
+    description: "Fact table of WWI invoice lines clustered by invoice_date, customer_category_name, and stock_group_name"
+    columns:
+      - name: invoice_line_sk
+        tests:
+          - unique
+          - not_null
+      - name: invoice_line_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: stock_item_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_stock_items')
+              field: stock_item_id
+
+  - name: mart_categorical_sales_by_category
+    description: "Dashboard Tile 1 Mart: Categorical distribution of WWI revenue, profit, and units across Customer Categories, Stock Groups, and Territories"
+    columns:
+      - name: customer_category_name
+        tests:
+          - not_null
+      - name: stock_group_name
+        tests:
+          - not_null
+      - name: total_net_revenue
+        tests:
+          - not_null
+
+  - name: mart_temporal_monthly_revenue
+    description: "Dashboard Tile 2 Mart: Temporal monthly revenue, profit, YTD cumulative revenue, and Chiller vs Dry split"
+    columns:
+      - name: invoice_month
+        tests:
+          - not_null
+      - name: monthly_net_revenue
+        tests:
+          - not_null

@@ -1,0 +1,52 @@
+// =============================================================================
+// Wide World Importers (WWI) - Power BI DAX Measures
+// Model Tables:
+//   - MART_CATEGORICAL_SALES_BY_CATEGORY
+//   - MART_TEMPORAL_MONTHLY_REVENUE
+//   - FCT_INVOICES
+//   - DIM_CUSTOMERS
+//   - DIM_STOCK_ITEMS
+// =============================================================================
+
+Total Net Revenue ($) =
+SUM ( 'MART_TEMPORAL_MONTHLY_REVENUE'[monthly_net_revenue] )
+
+Total Gross Revenue ($) =
+SUM ( 'MART_TEMPORAL_MONTHLY_REVENUE'[monthly_gross_revenue] )
+
+Total Profit ($) =
+SUM ( 'MART_TEMPORAL_MONTHLY_REVENUE'[monthly_profit] )
+
+Profit Margin (%) =
+DIVIDE ( [Total Profit ($)], [Total Net Revenue ($)], 0 )
+
+Total Invoices =
+SUM ( 'MART_TEMPORAL_MONTHLY_REVENUE'[total_invoices] )
+
+Total Units Sold =
+SUM ( 'MART_TEMPORAL_MONTHLY_REVENUE'[total_units_sold] )
+
+Average Revenue per Invoice ($) =
+DIVIDE ( [Total Net Revenue ($)], [Total Invoices], 0 )
+
+Chiller Stock Revenue ($) =
+SUM ( 'MART_TEMPORAL_MONTHLY_REVENUE'[chiller_net_revenue] )
+
+Dry Stock Revenue ($) =
+SUM ( 'MART_TEMPORAL_MONTHLY_REVENUE'[dry_net_revenue] )
+
+Chiller Revenue Share (%) =
+DIVIDE ( [Chiller Stock Revenue ($)], [Total Net Revenue ($)], 0 )
+
+Prior Year Net Revenue ($) =
+CALCULATE (
+    [Total Net Revenue ($)],
+    DATEADD ( 'MART_TEMPORAL_MONTHLY_REVENUE'[invoice_month], -1, YEAR )
+)
+
+YoY Revenue Growth (%) =
+DIVIDE (
+    [Total Net Revenue ($)] - [Prior Year Net Revenue ($)],
+    [Prior Year Net Revenue ($)],
+    0
+)

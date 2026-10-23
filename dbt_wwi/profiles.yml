@@ -1,0 +1,14 @@
+dbt_wwi:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', 'xy12345.east-us-2.azure') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', 'WWI_PIPELINE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD', 'placeholder_password') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'ACCOUNTADMIN') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'WWI_DB') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'WWI_WH') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA_STAGING', 'STAGING') }}"
+      threads: 4
+      client_session_keep_alive: false

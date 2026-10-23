@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wwi-snowflake-pipeline"
+version = "1.0.0"
+description = "End-to-End Wide World Importers (WWI) Analytics Pipeline with Azure Data Lake, Snowflake, dbt, Dagster, and Power BI / Looker Studio"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Data Engineering Portfolio" }
+]
+dependencies = [
+    "pandas>=2.1.0,<3.0.0",
+    "pyarrow>=14.0.0",
+    "numpy>=1.26.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.5.0",
+    "dagster>=1.7.0",
+    "dagster-webserver>=1.7.0",
+    "dagster-dbt>=0.23.0",
+    "dagster-snowflake>=0.23.0",
+    "dbt-core>=1.7.0,<1.9.0",
+    "dbt-snowflake>=1.7.0,<1.9.0",
+    "azure-storage-blob>=12.19.0",
+    "azure-identity>=1.15.0",
+    "snowflake-connector-python[pandas]>=3.6.0",
+    "matplotlib>=3.8.0",
+    "seaborn>=0.13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.3.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["dagster_wwi*"]
+
+[tool.dagster]
+module_name = "dagster_wwi.definitions"
+code_location_name = "wwi_snowflake_pipeline"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]

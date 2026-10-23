@@ -1,0 +1,86 @@
+version: 2
+
+models:
+  - name: stg_wwi__customers
+    description: "Cleaned and standardized Wide World Importers customer records"
+    columns:
+      - name: customer_id
+        description: "Primary key for customer"
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        tests:
+          - not_null
+      - name: customer_category_name
+        tests:
+          - not_null
+
+  - name: stg_wwi__stock_items
+    description: "Cleaned and standardized Wide World Importers warehouse stock items"
+    columns:
+      - name: stock_item_id
+        tests:
+          - unique
+          - not_null
+      - name: stock_group_name
+        tests:
+          - not_null
+
+  - name: stg_wwi__suppliers
+    description: "Cleaned and standardized WWI suppliers"
+    columns:
+      - name: supplier_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_wwi__orders
+    description: "Cleaned WWI sales orders header records"
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: order_date
+        tests:
+          - not_null
+
+  - name: stg_wwi__order_lines
+    description: "Cleaned WWI sales order line items"
+    columns:
+      - name: order_line_id
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        tests:
+          - not_null
+
+  - name: stg_wwi__invoices
+    description: "Cleaned WWI invoice header records"
+    columns:
+      - name: invoice_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: invoice_date
+        tests:
+          - not_null
+
+  - name: stg_wwi__invoice_lines
+    description: "Cleaned WWI invoice line items with revenue, tax, and line profit"
+    columns:
+      - name: invoice_line_id
+        tests:
+          - unique
+          - not_null
+      - name: invoice_id
+        tests:
+          - not_null

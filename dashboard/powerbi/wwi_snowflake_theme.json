@@ -1,0 +1,16 @@
+{
+  "name": "WWI Snowflake Executive Analytics",
+  "dataColors": [
+    "#0F4C81",
+    "#00A8E8",
+    "#2EC4B6",
+    "#FF9F1C",
+    "#E71D36",
+    "#6B5B95",
+    "#88B04B",
+    "#F7CAC9"
+  ],
+  "background": "#F8FAFC",
+  "foreground": "#0F172A",
+  "tableAccent": "#00A8E8"
+}
